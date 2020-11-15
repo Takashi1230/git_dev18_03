@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>my Memo's Pad</title>
+<script src="js/jquery-2.1.3.min.js"></script>
+<link rel="stylesheet" href="css/sample.css">
+<style>
+li{text-align: center;}
+.tab{overflow:hidden;}
+.tab li{background:#ccc; padding:5px 25px; float:left; margin-right:1px;}
+.tab li.select{background:#eee;}
+.content li{background:#eee; padding:20px;}
+.hide {display:none;}
+</style>
+</head>
+
+<body>
+
+    <header>
+        <h1>MemoPad</h1>
+    </header>
+
+    <main>
+        <ul class="tab">
+            <li class="select">タブ1</li>
+        </ul>
+        <ul class="content">
+            <li><textarea id="memo1" cols="30" rows="10"></textarea></li>
+        </ul>
+        <ul>
+            <li id="translate">Translate</li>
+        </ul>
+    </main>
+
+<footer><small>G's</small></footer>
+<script src='http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'></script>
+<script src='js/translate.js'></script>
+
+    <h1>RSSフィード表示サンプル</h1>
+    <div id="rss"></div>
+
+<script>
+
+
+let num = 0;
+//1.Save クリックイベント
+$('#translate').on('click', function(){
+    const input = $('#memo1').val();
+    //DeepLに単語を投げるのをつくりたい
+    window.open('https://www.deepl.com/translator#en/ja/'+input);
+    // localStorage.setItem(num, value);
+    num++;
+
+
+})
+
+
+
+// //2.ロード時に表示
+// for(let i=0; i<localStorage.length;i++){
+//     const key = i;
+//     const value = localStorage.getItem(key);
+//     const html =
+//     `
+//     <li>
+//         <span>${value}</span>
+//       </li>
+//     `;
+// $('#memo1').append(html);
+// }
+
+// //3.Clear
+// $('#clear').on('click', function(){
+//     localStorage.clear();
+//     $('#memo1').empty();
+
+// })
+
+
+</script>
+</body>
+
+</html>
