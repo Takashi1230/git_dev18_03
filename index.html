@@ -122,7 +122,7 @@ $('#radio_ja').on('click', function(){
         input_lang_audio="ja-JP"; //入力音声：日本語
     }else{
         output_lang = "ja";
-        input_lang_audio="en-US"; //入力音声：日本語
+        input_lang_audio="en-US"; //入力音声：英語
     }
     console.log(input_lang);
     console.log(output_lang);
@@ -136,7 +136,7 @@ $('#radio_en').on('click', function(){
         input_lang_audio="ja-JP"; //入力音声：日本語
     }else{
         output_lang = "ja";
-        input_lang_audio="en-US"; //入力音声：日本語
+        input_lang_audio="en-US"; //入力音声：英語
     }
     // console.log(input_lang);
     // console.log(output_lang);
@@ -156,7 +156,7 @@ $('#button').on('click', function(){
         if (e.results[0].isFinal) {
             speechResult = e.results[0][0].transcript;
         }
-
+    //認識した結果をテキストエリアに入力
     $('#memo1').val(speechResult);
     // console.log(speechResult);
     // console.log(speech.lang);
