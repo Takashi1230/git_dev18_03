@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>my Memo's Pad</title>
+<script src="js/jquery-2.1.3.min.js"></script>
+<link rel="stylesheet" href="css/sample.css">
+<style>
+li{text-align: center;}
+.tab{overflow:hidden;}
+.tab li{background:#ccc; padding:5px 25px; float:left; margin-right:1px;}
+.tab li.select{background:#eee;}
+.content li{background:#eee; padding:20px;}
+.hide {display:none;}
+</style>
+</head>
+
+<body>
+    <header>
+        <h1>Translator</h1>
+    </header>
+
+    <main>
+        <ul class="content">
+            <li><textarea id="memo1" cols="30" rows="10"></textarea></li>
+        </ul>
+        <ul>
+            <input type="radio" id="radio_ja" name="language" value="ja" checked="checked">日本語
+            <input type="radio" id="radio_en" name="language" value="en" >英語
+            <input type="button" id="button" value="音声入力">
+        </ul>
+        <ul>
+            <li id="translate">Translate</li>
+            <li id="clear">Clear</li>
+        </ul>
+        <ul id="list">
+
+        </ul>
+    </main>
+
+<script>
+    let input_lang = "";
+    let output_lang="";
+    let input_lang_audio = "";
+
+ //1.Translate クリックイベント
+    $('#translate').on('click', function(){
+    //翻訳のINPUTの文章を#memo1から取得。結果output変数は初期化
+    let input = $('#memo1').val();
+    let output ="";
+
+    //Google翻訳のAPI(自分で作成)
+    //FYI:https://qiita.com/satto_sann/items/be4177360a0bc3691fdf
+    const URL = 'https://script.google.com/macros/s/AKfycbxFJQOP33CidHD_arTTuiAyikEN5O_pDFn2mBOFl2I0IsRxBxfK/exec?text='+input+'&source='+input_lang+'&target='+output_lang;
+    console.log(URL);
+    // XMLHttpRequestオブジェクトの作成
+    //APIの結果をjsonで受け取る準備
+    let request = new XMLHttpRequest();
+
+    // URLを開く
+    request.open('GET', URL, true);
+
+    // リクエストをURLに送信
+    request.send();
+
+    // レスポンスが返ってきた時の処理を記述 
+    request.onload = function () {
+    // レスポンスが返ってきた時の処理
+    //jsonをjsonオブジェクトに変換 ※変換しないと配列の値を参照できない
+    let responseResult = JSON.parse(request.response); //jsonオブジェクトに変換
+    output = responseResult.text;   //配列のキーが"text"という名前
+    
+    //データを保存
+    localStorage.setItem(input, output);
+    
+    //リストを表示する関数呼び出し
+    load();
+}
+})
+
+//リスト表示
+function load(){
+    //画面上に表示するリストを一旦クリアする
+    $('#list').empty();
+    //リスト表示
+    for(let i=0; i<localStorage.length;i++){
+        const iv = localStorage.key(i);
+        const ov = localStorage.getItem(iv);
+        const html =
+        `
+        <li>
+            <span>${i+1}</span> <span>${iv}</span> <span>${ov}</span>
+        </li>
+        `;
+    $('#list').append(html);
+    }
+    $('#memo1').val('');
+}
+
+//リストクリアの関数
+function clear(){
+    localStorage.clear();
+    $('#list').empty();
+}
+
+// 画面更新時の動作
+window.onload = function(){
+    load();
+}
+
+//Clearボタンクリック時の動作
+$('#clear').on('click', function(){
+    clear();
+
+})
+
+//ラジオボタン選択時の動作
+$('#radio_ja').on('click', function(){
+    input_lang = $('input[name="language"]:checked').val();
+    if(input_lang =="ja"){
+        output_lang = "en";
+        input_lang_audio="ja-JP"; //入力音声：日本語
+    }else{
+        output_lang = "ja";
+        input_lang_audio="en-US"; //入力音声：日本語
+    }
+    console.log(input_lang);
+    console.log(output_lang);
+    console.log(input_lang_audio);
+
+})
+$('#radio_en').on('click', function(){
+    input_lang = $('input[name="language"]:checked').val();
+    if(input_lang =="ja"){
+        output_lang = "en";
+        input_lang_audio="ja-JP"; //入力音声：日本語
+    }else{
+        output_lang = "ja";
+        input_lang_audio="en-US"; //入力音声：日本語
+    }
+    // console.log(input_lang);
+    // console.log(output_lang);
+    // console.log(input_lang_audio);
+
+})
+//音声認識
+$('#button').on('click', function(){
+    let speech = new webkitSpeechRecognition();
+    let speechResult ="";
+    speech.lang = input_lang_audio;
+    
+
+    speech.start();
+    speech.onresult = function (e) {
+        speech.stop();
+        if (e.results[0].isFinal) {
+            speechResult = e.results[0][0].transcript;
+        }
+
+    $('#memo1').val(speechResult);
+    // console.log(speechResult);
+    // console.log(speech.lang);
+    }
+
+})
+    </script>
+</body>
+
+</html>
